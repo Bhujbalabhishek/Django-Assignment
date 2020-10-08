@@ -1,22 +1,23 @@
 from django.test import TestCase
 from client.models import Company, Department, Employee, EmpProfile
+import unittest
+import pytest
 
+class TestCompany(unittest.TestCase):
 
-class TestCompany(TestCase):
-
+    @pytest.mark.django_db
     def setUp(self):
         self.comp = Company.objects.create(company_name = "cybage")
-        self.comp1 = Company.objects.create(company_name = " ")
 
+    # test for __str__ method
+    @pytest.mark.django_db
     def test_str_is_equal_to_company_name(self):
-        self.assertEqual(self.comp.company_name, "cybage" )
+        self.assertEqual(self.comp.company_name, "cybage")
 
-    def test_str_is__for_company_name_blank(self):
-        self.assertEqual(self.comp1.company_name, " ")   
+  
+class TestDepartment(unittest.TestCase):
 
-
-class TestDepartment(TestCase):
-    
+    @pytest.mark.django_db
     def test_fields_in_comp_dept_name(self):
         comp = Company(company_name = "cybage")
         comp.save()
@@ -24,25 +25,22 @@ class TestDepartment(TestCase):
         dept = Department(dept_name = "IS", in_company = comp)
         dept.save()
 
+        #fetch the record from department model
         record = Department.objects.get(id=1)
 
+        #test for Department Model fields
         self.assertEqual(record.in_company, comp)
         self.assertEqual(record.dept_name , "IS")
 
-    def test_str_for_dept_in_comp(self):
-        comp = Company.objects.create(company_name = "cybage")
-    
-        dept = Department.objects.create(dept_name = "IS", in_company = comp)
-
-        record = Department.objects.get(id = 1)
+        # test for __str__ method
         self.assertEqual(str(record)," IS from cybage")
 
 
-class TestEmployee(TestCase):
+class TestEmployee(unittest.TestCase):
 
-
+    @pytest.mark.django_db
     def test_fields_for_employee(self):
-
+        #creating choices fields
         desig = (
 
         ('BASE', 'base employee'),
@@ -71,22 +69,26 @@ class TestEmployee(TestCase):
         dep = emp.in_dept.create(dept_name = "IS", in_company = comp)
         dep.save()
 
+        # test for __str__ method
         self.assertEqual(str(emp), "abhishekbhujbal")
-
+        
         self.assertEqual(str(record2), " IS from cybage")
         self.assertEqual(str(record3), " HR from cybage")
 
+        #test for choices 
         self.assertEqual(emp.role[0], ('BASE', 'base employee'))
         self.assertEqual(emp.role[1], ('MGR', 'manager'))
 
+        #test for dept in company
         self.assertEqual(dep.dept_name, "IS")
         self.assertEqual(dep.in_company, comp)
 
 
 
-class TestEmployeeProfile(TestCase):
+class TestEmployeeProfile(unittest.TestCase):
 
-    def test_field_for_empprofile(self):
+    @pytest.mark.django_db
+    def test_field_for_empprofile(value):
         desig = (
 
         ('BASE', 'base employee'),
@@ -100,21 +102,49 @@ class TestEmployeeProfile(TestCase):
             address = "Nerul",
             phone = 1234567890
         )
+
         comp = Company(company_name = "cybage")
         comp.save()
         
-        dep = employee.in_dept.create(dept_name = "IS", in_company = comp)
+        dep = employee.in_dept.create(dept_name = "IS", in_company = comp )
         dep.save()
         
+        #creating a EmployeeProfile Object
         emp_profile = EmpProfile.objects.create(
             emp = employee,
-            image = 
+            image = '/media/default.jpg'
             )
 
-        self.assertEqual(str(emp_profile), 'abhishek EmpProfile')
+        #test for __str__ method
+        assert str(emp_profile) == 'abhishek EmpProfile'
+
+        #test for the image path
+        assert emp_profile.image == '/media/default.jpg'
+
 
 
     
 
 
 
+
+
+
+
+
+
+
+
+
+    # @pytest.fixture
+    # def value():
+    #     comp = Company(company_name = "cybage")
+    #     comp.save()
+    #     record = Company.objects.get(id=1)
+    #     return record
+
+
+
+    # def test_str_is_equal_to_company_name(value):
+        
+    #     assert value.record.company_name == "cybage"
