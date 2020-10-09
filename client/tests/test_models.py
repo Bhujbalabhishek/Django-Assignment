@@ -51,7 +51,7 @@ class TestEmployee(unittest.TestCase):
         comp = Company(company_name = "cybage")
         comp.save()
 
-        dept2 = Department.objects.create(dept_name = "IS", in_company = comp)
+        dept2 = Department.objects.create(dept_name = "DEV", in_company = comp)
         dept3 = Department.objects.create(dept_name = "HR", in_company = comp)
 
         record2 = Department.objects.get(id = 1)
@@ -66,13 +66,13 @@ class TestEmployee(unittest.TestCase):
         )
 
         
-        dep = emp.in_dept.create(dept_name = "IS", in_company = comp)
+        dep = emp.in_dept.create(dept_name = "DEV", in_company = comp)
         dep.save()
 
         # test for __str__ method
         self.assertEqual(str(emp), "abhishekbhujbal")
         
-        self.assertEqual(str(record2), " IS from cybage")
+        self.assertEqual(str(record2), " DEV from cybage")
         self.assertEqual(str(record3), " HR from cybage")
 
         #test for choices 
@@ -80,7 +80,7 @@ class TestEmployee(unittest.TestCase):
         self.assertEqual(emp.role[1], ('MGR', 'manager'))
 
         #test for dept in company
-        self.assertEqual(dep.dept_name, "IS")
+        self.assertEqual(dep.dept_name, "DEV")
         self.assertEqual(dep.in_company, comp)
 
 
@@ -106,7 +106,7 @@ class TestEmployeeProfile(unittest.TestCase):
         comp = Company(company_name = "cybage")
         comp.save()
         
-        dep = employee.in_dept.create(dept_name = "IS", in_company = comp )
+        dep = employee.in_dept.create(dept_name = "ENG", in_company = comp )
         dep.save()
         
         #creating a EmployeeProfile Object

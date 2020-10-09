@@ -8,6 +8,7 @@ class Company(models.Model):
     
     class Meta:
         verbose_name_plural = "Company" 
+        
 
 
 
@@ -20,6 +21,7 @@ class Department(models.Model):
 
     class Meta:
         verbose_name_plural = "Department"
+        
 
 
 
@@ -46,7 +48,8 @@ class Employee(models.Model):
         return f"{self.first_name}{self.last_name}"
 
     class Meta:
-        verbose_name_plural = "Employee"  
+        verbose_name_plural = "Employee"
+        
 
 class EmpProfile(models.Model):
     emp = models.OneToOneField(Employee, on_delete=models.CASCADE)
@@ -56,5 +59,5 @@ class EmpProfile(models.Model):
         return f"{self.emp.first_name} EmpProfile"
 
     class Meta:
-        verbose_name_plural = "EmpProfile"   
+        verbose_name_plural = "EmpProfile" 
 
