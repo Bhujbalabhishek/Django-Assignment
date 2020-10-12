@@ -24,10 +24,11 @@ class Department_Serializer(serializers.ModelSerializer):
 class Employee_Serializer(serializers.ModelSerializer):
 
     dept =  Department.objects.all()
-    in_dept = serializers.PrimaryKeyRelatedField(queryset=dept, many=True)
+    in_dept = serializers.SlugRelatedField(slug_field='dept_name', queryset=dept, many=True)
 
-    # in_dept = Department_Serializer(read_only=True, many=True)
-    # in_dept = Department_Serializer(dept, many = True)  
+    # in_dept = serializers.PrimaryKeyRelatedField(queryset=dept, many=True)
+    # in_dept = Department_Serializer(dept, many=True)
+
 
 
 
