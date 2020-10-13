@@ -30,8 +30,6 @@ class Employee_Serializer(serializers.ModelSerializer):
     # in_dept = Department_Serializer(dept, many=True)
 
 
-
-
     class Meta:
         model = Employee
         fields = ["id", "role", "first_name", "last_name", "address", "phone", "in_dept"]
@@ -40,10 +38,10 @@ class Employee_Serializer(serializers.ModelSerializer):
 class EmpProfile_Serializer(serializers.ModelSerializer):
 
     emp = Employee_Serializer(read_only=True)
-
+    
     class Meta:
         model = EmpProfile
-        fields = ["emp", "image"]
+        fields = ["id", "emp", "image"]
 
 
 

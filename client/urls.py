@@ -34,8 +34,6 @@ empprof_list = EmpProfileList.as_view({
 
 empprof_detail = EmpProfileList.as_view({
     'get' : 'retrieve',
-    'put' : 'update',
-    'patch' : 'partial_update',
     'delete' : 'destroy'
 })
 

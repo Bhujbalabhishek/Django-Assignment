@@ -17,39 +17,20 @@ class CompanyList(APIView):
         serializer = Company_Serializer(company1, many = True)
         return Response(serializer.data)
 
-
 class DepartmentList(viewsets.ModelViewSet):
 
     queryset = Department.objects.all()
     serializer_class = Department_Serializer
-
-    # def get(self, request):
-    #     department1 = Department.objects.all()
-    #     serializer = Department_Serializer(department1, many = True)
-    #     return Response(serializer.data)
-
 
 class EmployeeList(viewsets.ModelViewSet):
 
     queryset = Employee.objects.all()
     serializer_class = Employee_Serializer
 
-    # def get(self, request):
-    #     employee1 = Employee.objects.all()
-    #     serializer = Employee_Serializer(employee1, many = True)
-    #     return Response(serializer.data)
-
-
 class EmpProfileList(viewsets.ModelViewSet):
 
     queryset = EmpProfile.objects.all()
     serializer_class = EmpProfile_Serializer
-
-    # def get(self, request):
-    #     empprof1 = EmpProfile.objects.all()
-    #     serializer = EmpProfile_Serializer(empprof1, many = True)
-    #     return Response(serializer.data)
-    
 
 @api_view(['GET'])
 def api_root(request, format = None):
