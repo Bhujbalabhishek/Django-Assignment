@@ -1,28 +1,19 @@
 from django.db import models
+from django.utils.safestring import mark_safe
 
 class Company(models.Model):
-    company_name = models.CharField(max_length = 100, blank = False)
+    company_name = models.CharField(max_length = 100)
 
     def __str__(self):
         return self.company_name
     
-    class Meta:
-        verbose_name_plural = "Company" 
-        
-
-
-
+    
 class Department(models.Model):
-    dept_name = models.CharField(max_length = 100, blank = False)
+    dept_name = models.CharField(max_length = 100)
     in_company = models.ForeignKey(Company, on_delete=models.CASCADE)
     
     def __str__(self):
         return ' {} from {}'.format(self.dept_name, self.in_company)
-
-    class Meta:
-        verbose_name_plural = "Department"
-        
-
 
 
 class Employee(models.Model):
@@ -47,9 +38,6 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.first_name}{self.last_name}"
 
-    class Meta:
-        verbose_name_plural = "Employee"
-        
 
 class EmpProfile(models.Model):
     emp = models.OneToOneField(Employee, on_delete=models.CASCADE)
@@ -57,7 +45,10 @@ class EmpProfile(models.Model):
 
     def __str__(self):
         return f"{self.emp.first_name} EmpProfile"
+    
+    def image_tag(self):
+        return mark_safe('<img src = "{}" width="150" />'.format(self.image.url))
+    image_tag.short_description = 'Image'
+    image_tag.allow_tags = True
 
-    class Meta:
-        verbose_name_plural = "EmpProfile" 
 

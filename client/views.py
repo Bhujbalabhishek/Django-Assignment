@@ -10,17 +10,22 @@ from client.serializers import Company_Serializer, Department_Serializer, Employ
 from rest_framework import viewsets
 
 
-class CompanyList(APIView):
+class CompanyList(viewsets.ModelViewSet):
 
-    def get(self, request):
-        company1 = Company.objects.all()
-        serializer = Company_Serializer(company1, many = True)
-        return Response(serializer.data)
+    queryset = Company.objects.all()
+    serializer_class = Company_Serializer
+
+    # def get(self, request):
+    #     company1 = Company.objects.all()
+    #     serializer = Company_Serializer(company1, many = True)
+    #     return Response(serializer.data)
+
 
 class DepartmentList(viewsets.ModelViewSet):
 
     queryset = Department.objects.all()
     serializer_class = Department_Serializer
+
 
 class EmployeeList(viewsets.ModelViewSet):
 
@@ -33,7 +38,7 @@ class EmpProfileList(viewsets.ModelViewSet):
     serializer_class = EmpProfile_Serializer
 
 @api_view(['GET'])
-def api_root(request, format = None):
+def api_root(request,format = None):
     return Response({
         'company': reverse('company_list', request = request, format = format),
         'department': reverse('dept_list', request = request, format = format),

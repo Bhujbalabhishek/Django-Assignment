@@ -3,6 +3,13 @@ from . import views
 from client.views import CompanyList, DepartmentList, EmployeeList, EmpProfileList, api_root
 from rest_framework.urlpatterns import format_suffix_patterns
 
+comp_list = CompanyList.as_view({
+    'get' : 'list'
+})
+
+comp_detail = CompanyList.as_view({
+    'get' : 'retrieve'
+})
 
 dept_list = DepartmentList.as_view({
     'get' : 'list',
@@ -39,7 +46,8 @@ empprof_detail = EmpProfileList.as_view({
 
 urlpatterns = [
     path('', api_root),
-    path('company/',CompanyList.as_view(), name = "company_list"),
+    path('company/',comp_list, name = "company_list"),
+    path('company/<int:pk>/',comp_detail, name = "company_detail"),
     path('department/',dept_list, name = "dept_list"),
     path('department/<int:pk>/',dept_detail, name = "dept_detail"),
     path('employee/',employee_list, name = "emp_list"),
