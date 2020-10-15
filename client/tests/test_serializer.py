@@ -1,10 +1,9 @@
 from django.test import TestCase
-import unittest
 import pytest
 from client.models import Company, Department, Employee, EmpProfile
 from client.serializers import Company_Serializer, Department_Serializer, Employee_Serializer, EmpProfile_Serializer
 
-class TestCompanySerializer(unittest.TestCase):
+class TestCompanySerializer(TestCase):
 
     @pytest.mark.django_db
     def setUp(self):
@@ -43,7 +42,7 @@ class TestCompanySerializer(unittest.TestCase):
     
 
 
-class TestDepartmentSerializer(unittest.TestCase):
+class TestDepartmentSerializer(TestCase):
 
     @pytest.mark.django_db
     def setUp(self):
@@ -82,7 +81,7 @@ class TestDepartmentSerializer(unittest.TestCase):
         self.assertEqual(data['in_company'], 'cybage')
     
 
-class TestEmpoyeeSerializer(unittest.TestCase):
+class TestEmpoyeeSerializer(TestCase):
 
     @pytest.mark.django_db
     def setUp(self):
@@ -97,6 +96,7 @@ class TestEmpoyeeSerializer(unittest.TestCase):
             'last_name' : 'bhujbal',
             'address': 'Nerul',
             'phone': 1234567890,
+            
 
         }
         
@@ -107,7 +107,7 @@ class TestEmpoyeeSerializer(unittest.TestCase):
             'last_name' : 'bhujbal',
             'address': 'Nerul',
             'phone': 1234567890,
-            # 'in_dept' : ['HR department', 'IS department']
+            
         }
 
         self.emp = Employee.objects.create(**self.emp_attributes)
@@ -136,7 +136,7 @@ class TestEmpoyeeSerializer(unittest.TestCase):
     
 
 
-class TestEmpProfileSerializer(unittest.TestCase):
+class TestEmpProfileSerializer(TestCase):
 
     @pytest.mark.django_db
     def setUp(self):

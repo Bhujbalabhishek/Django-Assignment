@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from .models import Company, Department, Employee, EmpProfile
 from django_reverse_admin import ReverseModelAdmin
-from nested_admin import NestedStackedInline, NestedModelAdmin
+from nested_admin import NestedStackedInline, NestedModelAdmin, NestedInlineModelAdmin
 
 admin.site.site_header = "CYBAGE MIS"
 
@@ -25,6 +25,7 @@ class EmpProfileAdmin(ReverseModelAdmin):
     list_display = ('emp','image_tag')
     list_display_links = ('emp','image_tag')
     readonly_fields = ['image_tag']
+    
 
 #using Django-Nested-Admin
 class EmployeeAdmin(NestedModelAdmin):
@@ -46,6 +47,47 @@ class CompanyAdmin(NestedModelAdmin):
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmpProfile, EmpProfileAdmin)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,9 +1,8 @@
 from django.test import TestCase
 from client.models import Company, Department, Employee, EmpProfile
-import unittest
 import pytest
 
-class TestCompany(unittest.TestCase):
+class TestCompany(TestCase):
 
     @pytest.mark.django_db
     def setUp(self):
@@ -15,7 +14,7 @@ class TestCompany(unittest.TestCase):
         self.assertEqual(self.comp.company_name, "cybage")
 
   
-class TestDepartment(unittest.TestCase):
+class TestDepartment(TestCase):
 
     @pytest.mark.django_db
     def test_fields_in_comp_dept_name(self):
@@ -36,7 +35,7 @@ class TestDepartment(unittest.TestCase):
         self.assertEqual(str(record)," IS from cybage")
 
 
-class TestEmployee(unittest.TestCase):
+class TestEmployee(TestCase):
 
     @pytest.mark.django_db
     def test_fields_for_employee(self):
@@ -85,7 +84,7 @@ class TestEmployee(unittest.TestCase):
 
 
 
-class TestEmployeeProfile(unittest.TestCase):
+class TestEmployeeProfile(TestCase):
 
     @pytest.mark.django_db
     def test_field_for_empprofile(value):
