@@ -10,7 +10,7 @@ import json
 from client.models import Company, Department, Employee, EmpProfile
 from mixer.backend.django import mixer
 from client.views import CompanyList, DepartmentList, EmployeeList, EmpProfileList
-# from django.test.client import RequestFactory
+
 
 class TestCompanyView(TestCase):
 

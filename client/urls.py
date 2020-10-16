@@ -3,6 +3,7 @@ from . import views
 from client.views import CompanyList, DepartmentList, EmployeeList, EmpProfileList, api_root
 from rest_framework.urlpatterns import format_suffix_patterns
 
+
 comp_list = CompanyList.as_view({
     'get' : 'list'
 })
