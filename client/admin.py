@@ -10,7 +10,6 @@ admin.site.site_header = "CYBAGE MIS"
 class DepartmentAdmin(NestedStackedInline):
     model = Department
     extra = 1
-    
 
 #using Django-Nested-Admin
 class EmpProfileAdmin2(NestedStackedInline):
@@ -25,15 +24,28 @@ class EmpProfileAdmin(ReverseModelAdmin):
     list_display = ('emp','image_tag')
     list_display_links = ('emp','image_tag')
     readonly_fields = ['image_tag']
-    
 
 #using Django-Nested-Admin
 class EmployeeAdmin(NestedModelAdmin):
     model = Employee
     inlines = [EmpProfileAdmin2]
     list_display = ('first_name', 'last_name', 'phone', 'dept', 'role')
-    list_display_links = ('first_name', 'phone', 'dept', 'role' )
-    
+    list_display_links = ('first_name', 'phone', 'dept', 'role')
+    search_fields = ('first_name','last_name','in_dept','role')
+    list_filter = ('role','in_dept')
+    fieldsets = [
+    (
+        'EMPLOYEE DETAILS', {
+            'fields':['role', 'first_name', 'last_name', 'address', 'phone']
+        }
+    ),
+    (
+        'DEPARTMENTS',{
+            'fields':['in_dept']
+        }
+    )
+    ]
+
     def dept(self,obj):
         return ','.join([in_dept.dept_name for in_dept in obj.in_dept.all()])
 
@@ -41,7 +53,6 @@ class EmployeeAdmin(NestedModelAdmin):
 class CompanyAdmin(NestedModelAdmin):
     model = Company
     inlines = [DepartmentAdmin]
-
 
 
 admin.site.register(Company, CompanyAdmin)

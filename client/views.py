@@ -33,6 +33,7 @@ class DepartmentList(viewsets.ModelViewSet):
     serializer_class = Department_Serializer
     queryset = Department.objects.all()
 
+
     # def get_queryset(self):
     #     queryset = self.queryset
     #     query_set = queryset.filter(id = self.kwargs['id'])
