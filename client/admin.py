@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from .models import Company, Department, Employee, EmpProfile
 from django_reverse_admin import ReverseModelAdmin
-from nested_admin import NestedStackedInline, NestedModelAdmin, NestedInlineModelAdmin
+from nested_admin import NestedStackedInline, NestedModelAdmin
 
 admin.site.site_header = "CYBAGE MIS"
 
@@ -10,6 +10,7 @@ admin.site.site_header = "CYBAGE MIS"
 class DepartmentAdmin(NestedStackedInline):
     model = Department
     extra = 1
+    can_delete = False
 
 #using Django-Nested-Admin
 class EmpProfileAdmin2(NestedStackedInline):
@@ -31,7 +32,7 @@ class EmployeeAdmin(NestedModelAdmin):
     inlines = [EmpProfileAdmin2]
     list_display = ('first_name', 'last_name', 'phone', 'dept', 'role')
     list_display_links = ('first_name', 'phone', 'dept', 'role')
-    search_fields = ('first_name','last_name','in_dept','role')
+    search_fields = ('first_name', 'last_name')
     list_filter = ('role','in_dept')
     fieldsets = [
     (
