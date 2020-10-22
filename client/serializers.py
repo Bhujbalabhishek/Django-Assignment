@@ -13,9 +13,6 @@ class Department_Serializer(serializers.ModelSerializer):
     comp =  Company.objects.all()
     in_company = serializers.SlugRelatedField(slug_field='company_name', queryset = comp)
     
-    # in_company = serializers.ReadOnlyField(source='in_company.company_name')
-    # in_company = Company_Serializer
-
     class Meta:
         model = Department
         fields = ["id", "dept_name", "in_company"]
@@ -25,10 +22,6 @@ class Employee_Serializer(serializers.ModelSerializer):
 
     dept =  Department.objects.all()
     in_dept = serializers.SlugRelatedField(slug_field='dept_name', queryset=dept, many=True)
-
-    # in_dept = serializers.PrimaryKeyRelatedField(queryset=dept, many=True)
-    # in_dept = Department_Serializer(dept, many=True)
-
 
     class Meta:
         model = Employee

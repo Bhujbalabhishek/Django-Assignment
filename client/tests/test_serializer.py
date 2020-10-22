@@ -84,56 +84,29 @@ class TestDepartmentSerializer(TestCase):
 class TestEmpoyeeSerializer(TestCase):
 
     @pytest.mark.django_db
-    def setUp(self):
+    def test_employee_serializer(self):
+        comp = Company.objects.create(company_name = 'cybage')
 
-        self.company = Company.objects.create(company_name='cybage')
-        # self.dept = Department(dept_name = ['HR department', 'IS department'], in_company = self.company)
-        # self.dept.save()
-        # record = Department.objects.get(id=1)
-        self.emp_attributes = {
-            'role' : 'MGR',
-            'first_name' : 'abhishek',
-            'last_name' : 'bhujbal',
-            'address': 'Nerul',
-            'phone': 1234567890,
-            
+        dept = Department.objects.create(dept_name='RP', in_company=comp)
 
-        }
+        emp = Employee.objects.create(
+            first_name='abhishek', 
+            last_name ='bhujbal', 
+            role='MGR', 
+            phone = 1452369780, 
+            address = 'Nerul'
+            )
         
-        self.emp_data = {
-            'id': 1,
-            'role' : 'MGR',
-            'first_name' : 'abhishek',
-            'last_name' : 'bhujbal',
-            'address': 'Nerul',
-            'phone': 1234567890,
-            
-        }
+        emp.in_dept.add(dept)
 
-        self.emp = Employee.objects.create(**self.emp_attributes)
+        emp_ser = Employee_Serializer(emp)
 
-        self.serializer = Employee_Serializer(instance = self.emp)
-
-    @pytest.mark.django_db
-    def test_contains_expected_fields(self):
-
-        data = self.serializer.data
-
-        self.assertEqual(set(data.keys()), set(['id', 'role', 'first_name', 'last_name', 'address', 'phone', 'in_dept']))
-
-
-    @pytest.mark.django_db
-    def test_emp_field_content(self):
-        data = self.serializer.data
-    
-        # checking if the serializer produces the expected data to given field
-        self.assertEqual(data['role'], self.emp_attributes['role'])
-        self.assertEqual(data['first_name'], self.emp_attributes['first_name'])
-        self.assertEqual(data['last_name'], self.emp_attributes['last_name'])
-        self.assertEqual(data['address'], self.emp_attributes['address'])
-        self.assertEqual(data['phone'], self.emp_attributes['phone'])
-        self.assertEqual(data['in_dept'], [])
-    
+        self.assertEqual (emp_ser.data['first_name'], emp.first_name)
+        self.assertEqual(emp_ser.data['role'], emp.role)
+        self.assertEqual(emp_ser.data['last_name'], emp.last_name)
+        self.assertEqual(emp_ser.data['address'], emp.address)
+        self.assertEqual(emp_ser.data['phone'], emp.phone)
+        self.assertEqual(emp_ser.data['in_dept'], ['RP'] )
 
 
 class TestEmpProfileSerializer(TestCase):
@@ -143,7 +116,7 @@ class TestEmpProfileSerializer(TestCase):
 
         self.company = Company.objects.create(company_name='cybage')
 
-        self.dept = Department(dept_name = ['HR department', 'IS department'], in_company = self.company)
+        self.dept = Department(dept_name = 'HR department', in_company = self.company)
         self.dept.save()
 
         self.emp = Employee.objects.create(
@@ -154,6 +127,8 @@ class TestEmpProfileSerializer(TestCase):
             phone = 1234567890,
 
             )
+        
+        self.emp.in_dept.add(self.dept)
 
         self.empprof_attributes = {
             'emp': self.emp,
@@ -189,7 +164,7 @@ class TestEmpProfileSerializer(TestCase):
         self.assertEqual(data['emp']['role'], em.role)
         self.assertEqual(data['emp']['address'], em.address)
         self.assertEqual(data['emp']['phone'], em.phone)
-        self.assertEqual(data['emp']['in_dept'], [])
+        self.assertEqual(data['emp']['in_dept'], ['HR department'])
 
         self.assertEqual(data['image'], '/media/default.jpg')
 

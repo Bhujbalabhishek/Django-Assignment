@@ -6,11 +6,16 @@ from nested_admin import NestedStackedInline, NestedModelAdmin
 
 admin.site.site_header = "CYBAGE MIS"
 
+class MembershipInline(NestedStackedInline):
+    model = Employee.in_dept.through
+    extra = 0
+
 #using Django-Nested-Admin
 class DepartmentAdmin(NestedStackedInline):
     model = Department
     extra = 1
     can_delete = False
+    inlines = [MembershipInline]
 
 #using Django-Nested-Admin
 class EmpProfileAdmin2(NestedStackedInline):

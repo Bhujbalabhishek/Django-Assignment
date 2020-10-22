@@ -9,6 +9,8 @@ from django.contrib.admin.sites import AdminSite
 from nested_admin import NestedStackedInline, NestedModelAdmin
 from client.admin import CompanyAdmin, DepartmentAdmin, EmployeeAdmin
 from django.urls import reverse
+from rest_framework import status
+from copy import deepcopy
 
 class SigninTest(TestCase):
 
@@ -116,51 +118,262 @@ class AdminViewTest(TestCase):
         self.assertEqual(EmpProfile.objects.count(), 1)
     
 
-class MockRequest:
-    pass
+def _create_super_user():
+    username = 'admin'
+    password = User.objects.make_random_password()
 
-class MockSuperUser:
-    def has_perm(self, perm, obj=None):
-        return True
+    user = User.objects.create_superuser(
+        email='admin@admin.com',
+        password=password,
+        username=username,
+    )
 
-request = MockRequest()
-request.user = MockSuperUser()
+    return (username, password)
 
-class ModeladminTests(TestCase):
+class AdminCompanyTestCase(TestCase):
+    # Payload obtained from Network -> Headers -> Form Data in Chrome
+    company_form_post_payload = {
+        "company_name": "cybage",
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.comp = Company.objects.create(
-            company_name = 'cybage'
-        )
-    
+        "department_set-TOTAL_FORMS": 1,
+        "department_set-INITIAL_FORMS": 0,
+        "department_set-MIN_NUM_FORMS": 0,
+        "department_set-MAX_NUM_FORMS": 1000,
+
+        "department_set-0-dept_name": 'HR',
+        "department_set-0-id": '',
+        "department_set-0-in_company":'' ,
+        "department_set-0-Employee_in_dept-TOTAL_FORMS": 0,
+        "department_set-0-Employee_in_dept-INITIAL_FORMS": 0,
+        "department_set-0-Employee_in_dept-MIN_NUM_FORMS": 0,
+        "department_set-0-Employee_in_dept-MAX_NUM_FORMS": 1000,
+    }
+
     def setUp(self):
-        self.site = AdminSite()
-    
-    def test_nestedmodeladmin_str(self):
-        co = CompanyAdmin(Company, self.site)
-        self.assertEqual(str(co), 'client.CompanyAdmin')
+        (self.username, self.password) = _create_super_user()
 
-    def test_company_admin(self):
-        self.assertIsNone(self.site.register(Company, NestedModelAdmin))
-    
-    def test_default_fields(self):
-        co = CompanyAdmin(Company, self.site)
-        self.assertEqual(list(co.get_form(request).base_fields), ['company_name'])
-        self.assertEqual(list(co.get_fields(request)), ['company_name'])
-        self.assertEqual(list(co.get_fields(request, self.comp)), ['company_name'])
-        self.assertIsNone(co.get_exclude(request, self.comp))  
+        comp = Company.objects.create(company_name='demo')
+        self.comp_id = comp.id
 
-    def test_default_fieldsets(self):
-        # fieldsets_add and fieldsets_change should return a special data structure that
-        # is used in the templates. They should generate the "right thing" whether we
-        # have specified a custom form, the fields argument, or nothing at all.
-        #
-        # Here's the default case. There are no custom form_add/form_change methods,
-        # no fields argument, and no fieldsets argument.
-        co = CompanyAdmin(Company, self.site)
-        self.assertEqual(co.get_fieldsets(request), [(None, {'fields': ['company_name']})])
-        self.assertEqual(co.get_fieldsets(request, self.comp), [(None, {'fields': ['company_name']})])   
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse('admin:index'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/admin/login/?next=/admin/')
+
+    def test_response_if_logged_in(self):
+        login = self.client.login(username=self.username, password=self.password)
+        response = self.client.get(reverse('admin:index'))
+        
+        # Check our user is logged in
+        self.assertEqual(str(response.context['user']), 'admin')
+        # Check that we got a response "success"
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_comp_detail_form(self):
+        self.client.login(
+            username =self.username,
+            password = self.password
+        )
+
+        response = self.client.get(
+            reverse(
+                'admin:client_company_change',
+                args=(self.comp_id,),
+            )
+        )
+        company = Company.objects.get(id=self.comp_id)
+
+        self.assertContains(response, company.company_name)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_company_form_add(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        response = self.client.post(
+            reverse('admin:client_company_add'),
+            self.company_form_post_payload,
+        )
+
+        company = Company.objects.get(company_name=self.company_form_post_payload["company_name"])
+        dept = Department.objects.get(in_company = company.id)
+
+        self.assertEqual(company.company_name, self.company_form_post_payload["company_name"])
+        self.assertEqual(dept.dept_name, self.company_form_post_payload["department_set-0-dept_name"])
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+
+    def test_company_form_change(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        # any changes made to a copy of object do not reflect in the original object
+        company_form_post_payload = deepcopy(self.company_form_post_payload)
+        company_form_post_payload['company_name'] = 'New Company'
+        company_form_post_payload['department_set-0-dept_name'] = 'HR updated'
+
+        response = self.client.post(
+            reverse(
+                'admin:client_company_change',
+                args=(self.comp_id,),
+            ),
+            company_form_post_payload
+        )
+        company = Company.objects.get(id=self.comp_id)
+        dept = Department.objects.get(in_company=company.id)
+
+        self.assertEqual(company.company_name, 'New Company')
+        self.assertEqual(dept.dept_name, 'HR updated')
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_delete_company(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        response = self.client.post(
+            reverse(
+                'admin:client_company_delete',
+                args=(self.comp_id,),
+            ),
+            {"post": "yes"}  # Are you sure? button
+        )
+
+        del_comp = Company.objects.filter(pk=self.comp_id).first()
+        self.assertEqual(del_comp, None)
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+class AdminEmployeeviewTest(TestCase):
+
+    emp_form_post_payload = {
+        "role": 'MGR',
+        "first_name": "abhi",
+        "last_name": "bhujbal",
+        "address": "nerul",
+        "phone": 2569784102,
+        "empprofile-TOTAL_FORMS": 1,
+        "empprofile-INITIAL_FORMS": 0,
+        "empprofile-MIN_NUM_FORMS": 0,
+        "empprofile-MAX_NUM_FORMS": 1,
+    }
+    emp_form_post_invalid_payload = deepcopy(emp_form_post_payload)
+
+    def setUp(self):
+
+        (self.username, self.password) = _create_super_user()
+
+        comp = Company.objects.create(company_name='Test Company 1')
+        dept1 = Department.objects.create(dept_name='Engineering', in_company=comp)
+
+        self.emp = Employee.objects.create(
+            role = 'MGR',
+            first_name = "abhishek",
+            last_name = "bhujbal",
+            address = "Nerul",
+            phone = 1234567895, 
+        )
+
+        self.emp.in_dept.add(dept1)
+        self.emp_form_post_payload['in_dept'] = dept1.pk
+
+    def test_emp_detail_form(self):
+        self.client.login(
+            username = self.username,
+            password = self.password
+        )
+
+        response = self.client.get(
+            reverse(
+                'admin:client_employee_change',
+                args=(self.emp.id,),
+            )
+        )
+        em = Employee.objects.get(id=self.emp.id)
+
+        self.assertContains(response, em.first_name)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_emp_form_add(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+        response = self.client.post(
+            reverse('admin:client_employee_add'),
+            self.emp_form_post_payload,
+        )
+
+        employee = Employee.objects.get(first_name=self.emp_form_post_payload["first_name"])
+
+        self.assertEqual(employee.first_name, self.emp_form_post_payload["first_name"])
+        # self.assertEqual(dept.dept_name, self.company_form_post_payload["department_set-0-dept_name"])
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+
+    def test_emp_add_invalid_form(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        response = self.client.post(
+            reverse('admin:client_employee_add'),
+            self.emp_form_post_invalid_payload,
+        )
+
+        self.assertContains(response, 'This field is required.')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_emp_change_form(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        # any changes made to a copy of object do not reflect in the original object
+        emp_form_post_payload = deepcopy(self.emp_form_post_payload)
+        emp_form_post_payload['role'] = 'BASE'
+
+        response = self.client.post(
+            reverse(
+                'admin:client_employee_change',
+                args=(self.emp.id,),
+            ),
+            emp_form_post_payload
+        )
+        employee = Employee.objects.get(id=self.emp.id)
+
+        self.assertEqual(employee.role, 'BASE')
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_emp_delete(self):
+        self.client.login(
+            username=self.username,
+            password=self.password,
+        )
+
+        response = self.client.post(
+            reverse(
+                'admin:client_employee_delete',
+                args=(self.emp.id,),
+            ),
+            {"post": "yes"}  # Are you sure? button
+        )
+
+        deleted = Employee.objects.filter(pk=self.emp.id).first()
+        self.assertEqual(deleted, None)
+
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+
 
 
 

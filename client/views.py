@@ -17,11 +17,6 @@ class CompanyList(viewsets.ModelViewSet):
     serializer_class = Company_Serializer
     queryset = Company.objects.all()
 
-    # def get(self, request):
-    #     company1 = Company.objects.all()
-    #     serializer = Company_Serializer(company1, many = True)
-    #     return Response(serializer.data)
-
     def get_queryset(self):
         queryset = self.queryset
         query_set = queryset.filter()
@@ -29,16 +24,8 @@ class CompanyList(viewsets.ModelViewSet):
 
 class DepartmentList(viewsets.ModelViewSet):
 
-    
     serializer_class = Department_Serializer
     queryset = Department.objects.all()
-
-
-    # def get_queryset(self):
-    #     queryset = self.queryset
-    #     query_set = queryset.filter(id = self.kwargs['id'])
-    #     return query_set
-
 
 class EmployeeList(viewsets.ModelViewSet):
 

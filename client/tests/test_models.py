@@ -66,7 +66,8 @@ class TestEmployee(TestCase):
 
         
         dep = emp.in_dept.create(dept_name = "DEV", in_company = comp)
-        dep.save()
+        
+        emp.in_dept.add(dep)
 
         # test for __str__ method
         self.assertEqual(str(emp), "abhishekbhujbal")
@@ -106,7 +107,8 @@ class TestEmployeeProfile(TestCase):
         comp.save()
         
         dep = employee.in_dept.create(dept_name = "ENG", in_company = comp )
-        dep.save()
+        
+        employee.in_dept.add(dep)
         
         #creating a EmployeeProfile Object
         emp_profile = EmpProfile.objects.create(
@@ -121,29 +123,3 @@ class TestEmployeeProfile(TestCase):
         assert emp_profile.image == '/media/default.jpg'
 
 
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-    # @pytest.fixture
-    # def value():
-    #     comp = Company(company_name = "cybage")
-    #     comp.save()
-    #     record = Company.objects.get(id=1)
-    #     return record
-
-
-
-    # def test_str_is_equal_to_company_name(value):
-        
-    #     assert value.record.company_name == "cybage"
