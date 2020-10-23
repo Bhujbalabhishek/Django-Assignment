@@ -314,7 +314,6 @@ class AdminEmployeeviewTest(TestCase):
         employee = Employee.objects.get(first_name=self.emp_form_post_payload["first_name"])
 
         self.assertEqual(employee.first_name, self.emp_form_post_payload["first_name"])
-        # self.assertEqual(dept.dept_name, self.company_form_post_payload["department_set-0-dept_name"])
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
 
