@@ -13,14 +13,8 @@ from rest_framework.response import Response
 
 class CompanyList(viewsets.ModelViewSet):
 
-    
     serializer_class = Company_Serializer
     queryset = Company.objects.all()
-
-    def get_queryset(self):
-        queryset = self.queryset
-        query_set = queryset.filter()
-        return query_set
 
 class DepartmentList(viewsets.ModelViewSet):
 
