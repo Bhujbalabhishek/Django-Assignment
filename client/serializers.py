@@ -30,7 +30,7 @@ class Employee_Serializer(serializers.ModelSerializer):
 
 class EmpProfile_Serializer(serializers.ModelSerializer):
 
-    emp = Employee_Serializer(read_only=True)
+    emp = Employee_Serializer
     
     class Meta:
         model = EmpProfile

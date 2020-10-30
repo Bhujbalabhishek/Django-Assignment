@@ -13,14 +13,14 @@ from rest_framework.response import Response
 
 class CompanyList(viewsets.ModelViewSet):
 
-    serializer_class = Company_Serializer
     queryset = Company.objects.all()
-
+    serializer_class = Company_Serializer
+    
 class DepartmentList(viewsets.ModelViewSet):
 
-    serializer_class = Department_Serializer
     queryset = Department.objects.all()
-
+    serializer_class = Department_Serializer
+    
 class EmployeeList(viewsets.ModelViewSet):
 
     queryset = Employee.objects.all()
@@ -31,11 +31,34 @@ class EmpProfileList(viewsets.ModelViewSet):
     queryset = EmpProfile.objects.all()
     serializer_class = EmpProfile_Serializer
 
-@api_view(['GET'])
-def api_root(request,format = None):
-    return Response({
-        'company': reverse('company_list', request = request, format = format),
-        'department': reverse('dept_list', request = request, format = format),
-        'employee': reverse('emp_list', request = request, format = format),
-        'empprofile': reverse('empprof_list', request = request, format = format)
-    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @api_view(['GET'])
+# def api_root(request,format = None):
+#     return Response({
+#         'company': reverse('company_list', request = request, format = format),
+#         'department': reverse('dept_list', request = request, format = format),
+#         'employee': reverse('emp_list', request = request, format = format),
+#         'empprofile': reverse('empprof_list', request = request, format = format)
+#     })
