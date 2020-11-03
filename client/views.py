@@ -9,6 +9,7 @@ from rest_framework.reverse import reverse
 from client.serializers import Company_Serializer, Department_Serializer, Employee_Serializer, EmpProfile_Serializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework import generics
 
 
 class CompanyList(viewsets.ModelViewSet):
@@ -18,18 +19,23 @@ class CompanyList(viewsets.ModelViewSet):
     
 class DepartmentList(viewsets.ModelViewSet):
 
-    queryset = Department.objects.all()
     serializer_class = Department_Serializer
+
+    def get_queryset(self):
+        return Department.objects.filter(in_company = self.kwargs['company_pk'])
     
 class EmployeeList(viewsets.ModelViewSet):
 
-    queryset = Employee.objects.all()
     serializer_class = Employee_Serializer
+
+    def get_queryset(self):
+        return Employee.objects.filter(in_dept = self.kwargs['department_pk'])
 
 class EmpProfileList(viewsets.ModelViewSet):
 
     queryset = EmpProfile.objects.all()
     serializer_class = EmpProfile_Serializer
+
 
 
 

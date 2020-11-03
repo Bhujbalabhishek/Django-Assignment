@@ -10,7 +10,7 @@ class Company(models.Model):
     
 class Department(models.Model):
     dept_name = models.CharField(max_length = 100)
-    in_company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    in_company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name = 'dept')
     
     def __str__(self):
         return ' {} from {}'.format(self.dept_name, self.in_company)
