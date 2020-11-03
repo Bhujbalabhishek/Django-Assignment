@@ -157,14 +157,8 @@ class TestEmpProfileSerializer(TestCase):
     @pytest.mark.django_db
     def test_empprof_field_content(self):
         data = self.serializer.data
-        em = Employee.objects.get(id=1)
+        em = Employee.objects.get()
         # checking if the serializer produces the expected data to given field
-        self.assertEqual(data['emp']['first_name'], em.first_name)
-        self.assertEqual(data['emp']['last_name'], em.last_name)
-        self.assertEqual(data['emp']['role'], em.role)
-        self.assertEqual(data['emp']['address'], em.address)
-        self.assertEqual(data['emp']['phone'], em.phone)
-        self.assertEqual(data['emp']['in_dept'], ['HR department'])
-
+        self.assertEqual(data['emp'], em.id)
         self.assertEqual(data['image'], '/media/default.jpg')
 

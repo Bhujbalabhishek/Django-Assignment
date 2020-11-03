@@ -135,18 +135,18 @@ class AdminCompanyTestCase(TestCase):
     company_form_post_payload = {
         "company_name": "cybage",
 
-        "department_set-TOTAL_FORMS": 1,
-        "department_set-INITIAL_FORMS": 0,
-        "department_set-MIN_NUM_FORMS": 0,
-        "department_set-MAX_NUM_FORMS": 1000,
+        "dept-TOTAL_FORMS": 1,
+        "dept-INITIAL_FORMS": 0,
+        "dept-MIN_NUM_FORMS": 0,
+        "dept-MAX_NUM_FORMS": 1000,
 
-        "department_set-0-dept_name": 'HR',
-        "department_set-0-id": '',
-        "department_set-0-in_company":'' ,
-        "department_set-0-Employee_in_dept-TOTAL_FORMS": 0,
-        "department_set-0-Employee_in_dept-INITIAL_FORMS": 0,
-        "department_set-0-Employee_in_dept-MIN_NUM_FORMS": 0,
-        "department_set-0-Employee_in_dept-MAX_NUM_FORMS": 1000,
+        "dept-0-dept_name": 'HR',
+        "dept-0-id": '',
+        "dept-0-in_company":'' ,
+        "dept-0-Employee_in_dept-TOTAL_FORMS": 0,
+        "dept-0-Employee_in_dept-INITIAL_FORMS": 0,
+        "dept-0-Employee_in_dept-MIN_NUM_FORMS": 0,
+        "dept-0-Employee_in_dept-MAX_NUM_FORMS": 1000,
     }
 
     def setUp(self):
@@ -202,7 +202,7 @@ class AdminCompanyTestCase(TestCase):
         dept = Department.objects.get(in_company = company.id)
 
         self.assertEqual(company.company_name, self.company_form_post_payload["company_name"])
-        self.assertEqual(dept.dept_name, self.company_form_post_payload["department_set-0-dept_name"])
+        self.assertEqual(dept.dept_name, self.company_form_post_payload["dept-0-dept_name"])
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
 
@@ -215,7 +215,7 @@ class AdminCompanyTestCase(TestCase):
         # any changes made to a copy of object do not reflect in the original object
         company_form_post_payload = deepcopy(self.company_form_post_payload)
         company_form_post_payload['company_name'] = 'New Company'
-        company_form_post_payload['department_set-0-dept_name'] = 'HR updated'
+        company_form_post_payload['dept-0-dept_name'] = 'HR updated'
 
         response = self.client.post(
             reverse(

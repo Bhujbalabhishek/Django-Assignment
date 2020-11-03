@@ -8,7 +8,7 @@ from rest_framework_nested import routers
 
 router = DefaultRouter()
 
-router.register(r'companys', CompanyList, basename = 'companys')
+router.register(r'companys', CompanyList)
 
 dept_router = routers.NestedSimpleRouter(router, r'companys', lookup = 'company')
 dept_router.register(r'departments', DepartmentList, basename = 'departments')
@@ -16,6 +16,8 @@ dept_router.register(r'departments', DepartmentList, basename = 'departments')
 emp_router = routers.NestedSimpleRouter(dept_router, r'departments', lookup = 'department')
 emp_router.register(r'employees', EmployeeList, basename = 'employees')
 
+# router.register(r'department', DepartmentList)
+# router.register(r'employee', EmployeeList)
 router.register(r'empprof', EmpProfileList)
 
 urlpatterns =[
