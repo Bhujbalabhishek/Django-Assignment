@@ -5,7 +5,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
 
-# from rest_framework_extensions.routers import NestedRouterMixin
 
 router = DefaultRouter()
 
@@ -26,27 +25,6 @@ urlpatterns =[
     path('',include(dept_router.urls)),
     path('',include(emp_router.urls)),
 ]
-
-# router = DefaultRouter()
-
-# router.register(r'companys', CompanyList)
-# router.register(r'department', DepartmentList)
-# router.register(r'employee', EmployeeList)
-# router.register(r'empprof', EmpProfileList)
-
-# class NestedDefaultRouter(NestedRouterMixin,DefaultRouter):
-#     pass
-
-# router = NestedDefaultRouter()
-
-# comp_router= router.register(r'companys', CompanyList)
-
-# comp_router.register(
-#     'department',
-#     DepartmentList,
-#     basename = 'departments',
-#     parent_query_lookups = ['company']
-# )
 
 
 
