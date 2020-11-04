@@ -164,16 +164,7 @@ class TestEmployeeView(TestCase):
         assert response.data['address'] == 'nerul'
         assert response.data['in_dept'] == ['HR department', 'IS department']
     
-    # @pytest.mark.django_db
-    # def test_employee_delete(self):        
-    #     mixer.blend('client.Employee')
-    #     path = reverse('employees-detail', args=(1,1,1,))
-    #     request = RequestFactory().delete(path)
-    #     response = EmployeeList.as_view(actions={
-    #         'delete': 'destroy',
-    #     })(request, company_pk = 1, department_pk = 1,pk = 1)
-    #     assert response.status_code == 204
-
+    
 class TestEmpProfileView(TestCase):
 
     @pytest.mark.django_db
